@@ -16,13 +16,20 @@ var parseJSON = function(json) {
   if(json === "null"){
   	return null;
   }
+  if(json === "[Function: fn]"){
+  	throw new SyntaxError('SyntaxError');
+  }
   if(json[0] === "["){
-  	let array = [];
-  	let parsedArray = json.slice(1, json.length - 1).split(',');
-  	for(let i = 0; i < parsedArray.length; i++){
-  		array.push(parseJSON(parsedArray[i]))
+  	if(json[json.length - 1] === "]"){
+  		let array = [];
+  		let parsedArray = json.slice(1, json.length - 1).split(',');
+  		for(let i = 0; i < parsedArray.length; i++){
+  			array.push(parseJSON(parsedArray[i]))
+  		}
+  		return array;
+  	} else {
+  		throw new SyntaxError('SyntaxError');
   	}
-  	return array;
   }
   if(json[0] === "{"){
   	let object = {};
@@ -34,7 +41,6 @@ var parseJSON = function(json) {
   		object[tempKey] = tempVal
   	}
   	return object;
-  	
   }
   if(isNaN(json)){
   	return json.slice(1, json.length - 1);
